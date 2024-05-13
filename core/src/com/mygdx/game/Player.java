@@ -32,25 +32,25 @@ public class Player {
 
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
             y += speed * deltaTime;
-            if (y + MainGame.SCREEN_HEIGHT > MainGame.SCREEN_HEIGHT) {
+            if (y > (MainGame.SCREEN_HEIGHT/2)) {
                 y = 0;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             y -= speed * deltaTime;
-            if (y < -MainGame.SCREEN_HEIGHT) {
+            if (y < -(MainGame.SCREEN_HEIGHT/2)) {
                 y = 0;
             }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
              x -= speed * deltaTime;
-             if (x < -MainGame.SCREEN_WIDTH) {
+             if (x < -(MainGame.SCREEN_WIDTH/2)) {
                  x = 0;
              }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             x += speed * deltaTime;
-            if (x + MainGame.SCREEN_WIDTH > MainGame.SCREEN_WIDTH) {
+            if (x > (MainGame.SCREEN_WIDTH/2)) {
                 x = 0;
             }
         }
