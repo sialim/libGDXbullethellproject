@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainGame extends ApplicationAdapter {
+public class MainGame extends Game {
 	public static final int SCREEN_WIDTH = 500;
 	public static final int SCREEN_HEIGHT = 700;
 
@@ -74,6 +75,8 @@ public class MainGame extends ApplicationAdapter {
 		leftAnimation = createAnimation(leftTexture, 3);
 		rightAnimation = createAnimation(rightTexture, 3);*/
 
+
+
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		batch = new SpriteBatch();
@@ -90,6 +93,8 @@ public class MainGame extends ApplicationAdapter {
 		background.setPosition(0, 0);
 
 		player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
+
+		this.setScreen(new MenuScreen(this));
 	}
 
 	@Override

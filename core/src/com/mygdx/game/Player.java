@@ -40,7 +40,8 @@ public class Player extends Entity {
     }
 
     public void shoot() {
-        Bullet bullet = new Bullet(super.getX() + sprite.getWidth() / 2 /*center*/, super.getY() + sprite.getHeight()/*top*/, 90);
+        int angle = Utilities.generateRandomNum(87, 93);
+        Bullet bullet = new Bullet(super.getX() + sprite.getWidth() / 2 /*center*/, super.getY() + sprite.getHeight()/*top*/, angle);
         bullets.add(bullet);
 
         Array<Bullet> tempGlobalBullets = MainGame.getGlobalBullets();
