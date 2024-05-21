@@ -21,6 +21,8 @@ public class MainGame extends Game {
 	private GameScreen gameScreen;
 	private MenuScreen menuScreen;
 	private OptionsScreen optionsScreen;
+	private BulletPattern bulletPattern;
+	private Music backgroundMusic;
 
 	private static Array<Bullet> globalBullets;
 
@@ -94,7 +96,7 @@ public class MainGame extends Game {
 
 		player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
 
-		this.setScreen(new MenuScreen(this));
+		this.setScreen(new MenuScreen(this, bulletPattern));
 	}
 
 	@Override

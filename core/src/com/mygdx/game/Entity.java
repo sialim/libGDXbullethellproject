@@ -2,7 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class Entity {
+public abstract class Entity {
     private float x;
     private float y;
     private float maxHealth;
@@ -62,5 +62,13 @@ public class Entity {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public abstract void move(float deltaTime);
+
+    public abstract void shoot();
+
+    public Sprite getSprite() {
+        return sprite;
     }
 }

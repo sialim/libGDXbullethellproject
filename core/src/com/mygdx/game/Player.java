@@ -9,8 +9,6 @@ import com.badlogic.gdx.utils.Array;
 
 public class Player extends Entity {
     private final float BASE_SPEED = 200;
-
-    private Sprite sprite;
     private float speed;
 
     private boolean autoFireEnabled = false;
@@ -23,12 +21,7 @@ public class Player extends Entity {
 
     public Player(float maxHealth, float damage, CollisionRect rect, Sprite sprite) {
         super(maxHealth, damage, rect, sprite);
-        this.sprite = sprite;
         this.bullets = new Array<>();
-    }
-
-    public Sprite getSprite() {
-        return sprite;
     }
 
     public Array<Bullet> getBullets() {
@@ -41,12 +34,26 @@ public class Player extends Entity {
 
     public void shoot() {
         int angle = Utilities.generateRandomNum(87, 93);
-        Bullet bullet = new Bullet(super.getX() + sprite.getWidth() / 2 /*center*/, super.getY() + sprite.getHeight()/*top*/, angle);
+        Bullet bullet = new Bullet(super.getX() + super.getSprite().getWidth() / 2 /*center*/, super.getY() + super.getSprite().getHeight()/*top*/, angle);
         bullets.add(bullet);
 
         Array<Bullet> tempGlobalBullets = MainGame.getGlobalBullets();
         tempGlobalBullets.add(bullet);
         MainGame.setGlobalBullets(tempGlobalBullets);
+    }
+
+    public void handleShooting(float deltaTime) {
+        if(autoFireEnabled) {
+            timeSinceLastShot += deltaTime;
+            if (timeSinceLastShot >= fireCooldown) {
+                shoot();
+                timeSinceLastShot = 0.0f;
+            }
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+            toggleAutoFire();
+        }
     }
 
     public void move(float deltaTime) {
@@ -57,15 +64,6 @@ public class Player extends Entity {
             speed = BASE_SPEED / 2.0f;
         } else {
             speed = BASE_SPEED;
-        }
-
-        // Autofire
-        if(autoFireEnabled) {
-            timeSinceLastShot += deltaTime;
-            if (timeSinceLastShot >= fireCooldown) {
-                shoot();
-                timeSinceLastShot = 0.0f;
-            }
         }
 
         // --- Physical player movement
