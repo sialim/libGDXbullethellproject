@@ -11,13 +11,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import sun.jvm.hotspot.utilities.BitMap;
 
 public class GameScreen implements Screen {
 
     private static Array<Bullet> globalBullets;
+
+    private Stage stage;
 
     final MainGame mainGame;
     final BulletPattern bulletPattern;
@@ -51,6 +55,7 @@ public class GameScreen implements Screen {
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(1.5f);
+        font.setColor(0, 0, 0, 0);
 
         timeSinceTextDisplayed = 0.0f;
 
@@ -68,7 +73,7 @@ public class GameScreen implements Screen {
 
         // Boss sprite
         bossSprite = new Sprite(new Texture("hongmeiling.png"));
-        bossSprite.setPosition(0, 200);
+        bossSprite.setPosition(MainGame.SCREEN_WIDTH/2f, 200);
         sprite.setSize(30, 30);
 
         // Boss bullet sprite
@@ -81,8 +86,13 @@ public class GameScreen implements Screen {
 
         player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
         hongMeiling = new Boss(50000.0f, 1.0f, new CollisionRect(0, 0, 30, 30), bossSprite);
-        hongMeiling.setX(0.0f);
-        hongMeiling.setY(200.0f);
+        hongMeiling.setX(MainGame.SCREEN_WIDTH/2f);
+        hongMeiling.setY(1000.0f);
+
+        stage = new Stage(new ScreenViewport());
+        stage.addActor(hongMeiling);
+
+        hongMeiling.initiateSequence();
     }
 
     @Override
@@ -93,7 +103,7 @@ public class GameScreen implements Screen {
         player.move(deltaTime);
         player.updateBullets(deltaTime);
 
-
+        timeSinceTextDisplayed += deltaTime;
 
         player.getCollisionRect().move(player.getX(), player.getY());
 
@@ -101,35 +111,58 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         ScreenUtils.clear(1, 0, 0, 1);
+
         batch.setProjectionMatrix(camera.combined);
+        camera.update();
 
         batch.begin();
-
         batch.draw(background, -650, -350);
 
-        for (Bullet bullet : player.getBullets()) { /*Rendering all the bullets gathered from the player's personal bullet list*/
+        for (Bullet bullet : hongMeiling.getBullets()) {
+            batch.draw(bossBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 30, 30);
+            bullet.update(deltaTime);
+            //System.out.println("Rendering bullet at x: " + bullet.getPosition().x + ", y: " + bullet.getPosition().y);
+            //if ((bullet.getPosition().y < 0 || bullet.getPosition().y > MainGame.SCREEN_HEIGHT) || (bullet.getPosition().x < 0 || bullet.getPosition().x > MainGame.SCREEN_WIDTH)) {
+            //    hongMeiling.getBullets().removeValue(bullet, true);
+            //}
+        }
+
+        for (Bullet bullet : player.getBullets()) { /*Rendering all the bullets gathered from the player's personal bullet list
+        Fuck ChatGPT*/
             batch.draw(playerBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 10, 20);
         }
 
-        batch.draw(player.getSprite(), player.getX(), player.getY());
+        batch.draw(player.getSprite(), player.entGetX(), player.entGetY());
 
-        batch.draw(hongMeiling.getSprite(), hongMeiling.getX(), hongMeiling.getY());
+        batch.end();
 
-        // Text goes here
-        font.draw(batch, "Fair is foul, and foul is far.\nHover through the fog and filthy air.", -150, -200);
+        //hongMeiling.draw(batch, 1f);
 
-        timeSinceTextDisplayed += deltaTime;
-        if (timeSinceTextDisplayed >= 5.0f) {
+        stage.act(deltaTime);
+        stage.draw();
+
+        batch.begin();
+
+        if (timeSinceTextDisplayed >= 2.0f && timeSinceTextDisplayed < 5.0f) {
+            font.setColor(1, 1, 1, 1);
+        } else if (timeSinceTextDisplayed >= 5.0f) {
             font.setColor(0, 0, 0, 0);
-            //hongMeiling.initiateSequence();
         }
+
+        if (timeSinceTextDisplayed >= 6.0f && timeSinceTextDisplayed <= 6.5f) {
+            hongMeiling.shoot();
+        }
+        // note to self later: keep using time and use modulo operators to determine when to move the boss and fire attacks
+
+        font.draw(batch, "Fair is foul, and foul is fair.\nHover through the fog and filthy air.\nAUGUST 12 2036\nTHE HEAT DEATH OF THE UNIVERSE.", -150, -200);
+
 
         batch.end();
     }
 
     @Override
     public void resize(int x, int y) {
-        //super.resize(x, y);
+        stage.getViewport().update(x, y, true);
     }
 
     @Override
@@ -150,6 +183,12 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         playerBulletTexture.dispose();
+        bossBulletTexture.dispose();
+        bossSprite.getTexture().dispose();
+        stage.dispose();
+        batch.dispose();
+        background.getTexture().dispose();
+        font.dispose();
     }
 
     /*String message = "screaming in public restrooms prank\nAAAAAAAAAAAAAA";

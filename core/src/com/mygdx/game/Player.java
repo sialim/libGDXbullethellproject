@@ -39,7 +39,7 @@ public class Player extends Entity {
 
     public void shoot() {
         int angle = Utilities.generateRandomNum(87, 93);
-        Bullet bullet = new Bullet(super.getX() + super.getSprite().getWidth() / 2 /*center*/, super.getY() + super.getSprite().getHeight()/*top*/, angle);
+        Bullet bullet = new Bullet(super.entGetX() + (super.getSprite().getWidth() / 2)-8f /*center*/, super.entGetY() + super.getSprite().getHeight()/*top*/, angle);
         bullets.add(bullet);
         laserSound.play();
 
@@ -75,30 +75,30 @@ public class Player extends Entity {
         // --- Physical player movement
         // Up
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            super.setY(super.getY() + (speed * deltaTime));
-            if (super.getY() + 20 > (MainGame.SCREEN_HEIGHT/2)) {
-                super.setY((MainGame.SCREEN_HEIGHT/2) - 20);
+            super.entSetY(super.entGetY() + (speed * deltaTime));
+            if (super.entGetY() + 20 > (MainGame.SCREEN_HEIGHT/2)) {
+                super.entSetY((MainGame.SCREEN_HEIGHT/2) - 20);
             }
         }
         // Down
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            super.setY(super.getY() - (speed * deltaTime));
-            if (super.getY() < -(MainGame.SCREEN_HEIGHT/2)) {
-                super.setY(-(MainGame.SCREEN_HEIGHT/2));
+            super.entSetY(super.entGetY() - (speed * deltaTime));
+            if (super.entGetY() < -(MainGame.SCREEN_HEIGHT/2)) {
+                super.entSetY(-(MainGame.SCREEN_HEIGHT/2));
             }
         }
         // Left
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            super.setX(super.getX() - (speed * deltaTime));
-            if (super.getX() < -(MainGame.SCREEN_WIDTH/2)) {
-                super.setX(-(MainGame.SCREEN_WIDTH/2));
+            super.entSetX(super.entGetX() - (speed * deltaTime));
+            if (super.entGetX() < -(MainGame.SCREEN_WIDTH/2)) {
+                super.entSetX(-(MainGame.SCREEN_WIDTH/2));
             }
         }
         // Right
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            super.setX(super.getX() + (speed * deltaTime));
-            if (super.getX() + 20 > (MainGame.SCREEN_WIDTH/2)) {
-                super.setX((MainGame.SCREEN_WIDTH/2) - 20);
+            super.entSetX(super.entGetX() + (speed * deltaTime));
+            if (super.entGetX() + 20 > (MainGame.SCREEN_WIDTH/2)) {
+                super.entSetX((MainGame.SCREEN_WIDTH/2) - 20);
             }
         }
     }
@@ -108,15 +108,4 @@ public class Player extends Entity {
             bullet.update(deltaTime);
         }
     }
-
-    /*public TextureRegion getCurrentFrame() {
-        // Check which animation to play based on player movement
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            return leftAnimation.getKeyFrame(stateTime, true);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            return rightAnimation.getKeyFrame(stateTime, true);
-        } else {
-            return idleAnimation.getKeyFrame(stateTime, true);
-        }
-    }*/
 }

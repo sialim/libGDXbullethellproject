@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 
 public class Boss extends Entity {
@@ -11,9 +14,11 @@ public class Boss extends Entity {
     private float hp;
     private int atk;
     private int phase;
+    private float speed = 10.0f;
     private Bullet bullet;
     private CollisionRect rect;
     private Array<Bullet> bullets;
+    private BulletPattern pattern;
 
     private float fireCooldown = 0.25f;
     private float timeSinceLastShot = 0.0f;
@@ -23,24 +28,49 @@ public class Boss extends Entity {
 
     public Boss(float maxHealth, float damage, CollisionRect rect, Sprite sprite) {
         super(maxHealth, damage, rect, sprite);
+        bullets = new Array<>();
+        pattern = new BulletPattern();
+
+        setX(MainGame.SCREEN_WIDTH/2f);
+        setPosition(sprite.getX(), sprite.getY());
+        getSprite().setSize(sprite.getWidth(), sprite.getHeight());
+    }
+
+    public Array<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(Array<Bullet> bullets) {
+        this.bullets = bullets;
     }
 
     @Override
     public void move(float deltaTime) {
-        if(super.getX() > (float) Gdx.graphics.getWidth() / 2) {
+        setX(getX());
+        setY(getY());
+    }
 
-        }
+    @Override public void draw(Batch batch, float parentAlpha) {
+        getSprite().draw(batch, parentAlpha);
     }
 
     public void initiateSequence() {
-        while(super.getY() < (float) Gdx.graphics.getHeight() /2) {
-            super.setY(super.getY()-1);
-        }
+        float targetY = 500f;
+        float duration = 2.0f;
+        addAction(Actions.moveTo(getX(), targetY, duration));
     }
 
     @Override
     public void shoot() {
-        // figure this out later.
+        System.out.println("Shoot method running");
+        int angle = 270;
+        Bullet bullet = new Bullet(super.entGetX(), super.entGetY(), angle, 100);
+
+        bullets.add(bullet);
+
+        Array<Bullet> tempGlobalBullets = MainGame.getGlobalBullets();
+        tempGlobalBullets.add(bullet);
+        MainGame.setGlobalBullets(tempGlobalBullets);
     }
 
     public Boss(float maxHealth, float damage, CollisionRect rect, Sprite sprite, Bullet bullet) {
@@ -61,6 +91,22 @@ public class Boss extends Entity {
         }
     }
 
+    public void setPhase() { // changes the Bullet Pattern based on the Phase the boss has entered
+        // each Pattern is harder than the last.
+        int ammo = 100;
+        float speedOfBullet = 5;
+
+        if (phase == 3){
+            pattern.setRadialPattern(super.getX(), super.getY(), ammo, speedOfBullet);
+        } else if (phase == 2) {
+            float centerAngle = 180;
+            float spreadAngle = 45;
+            pattern.setFanPattern(super.getX(), super.getY(), centerAngle, spreadAngle, ammo, speedOfBullet);
+        } else {
+            float angle = 270;
+            pattern.setStraightPattern(super.getX(), super.getY(), angle, ammo, speedOfBullet);
+        }
+    }
     public int getAtk() {
         return atk;
     }
@@ -73,6 +119,10 @@ public class Boss extends Entity {
         updatePhase();
     }
 
+    public void takePlayerDamage(Player p){
+        takeDamage(p.getDamage());
+    }
+
     public boolean isDead() {
         return hp <= 0;
     }
@@ -83,5 +133,12 @@ public class Boss extends Entity {
             return name + " is dead";
         }
         return name + " has " + hp + "/" + maxHP + " health and " + atk + " attack power and is at phase " + phase;
+    }
+
+    @Override public void act(float delta) {
+        super.act(delta);
+
+        getSprite().setPosition(getX(), getY());
+        getCollisionRect().move(getX(), getY());
     }
 }
