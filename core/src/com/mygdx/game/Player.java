@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.audio.Sound;
 
 public class Player extends Entity {
     private final float BASE_SPEED = 200;
@@ -14,6 +15,8 @@ public class Player extends Entity {
     private boolean autoFireEnabled = false;
     private float fireCooldown = 0.05f;
     private float timeSinceLastShot = 0.0f;
+    private Sound laserSound;
+
 
     private float stateTime;
 
@@ -22,6 +25,8 @@ public class Player extends Entity {
     public Player(float maxHealth, float damage, CollisionRect rect, Sprite sprite) {
         super(maxHealth, damage, rect, sprite);
         this.bullets = new Array<>();
+        laserSound = Gdx.audio.newSound(Gdx.files.internal("playerbulletsoundeffect.wav"));
+
     }
 
     public Array<Bullet> getBullets() {
@@ -36,6 +41,7 @@ public class Player extends Entity {
         int angle = Utilities.generateRandomNum(87, 93);
         Bullet bullet = new Bullet(super.getX() + super.getSprite().getWidth() / 2 /*center*/, super.getY() + super.getSprite().getHeight()/*top*/, angle);
         bullets.add(bullet);
+        laserSound.play();
 
         Array<Bullet> tempGlobalBullets = MainGame.getGlobalBullets();
         tempGlobalBullets.add(bullet);

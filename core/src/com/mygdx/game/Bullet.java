@@ -32,6 +32,7 @@ public class Bullet {
         }
     }
 
+
     public Vector2 getPosition() {
         return position;
     }

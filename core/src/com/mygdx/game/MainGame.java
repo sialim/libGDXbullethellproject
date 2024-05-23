@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -94,6 +95,13 @@ public class MainGame extends Game {
 		background = new Sprite(new Texture("background.jpg"));
 		background.setPosition(0, 0);
 
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("meilingtheme.mp3"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(0.5f);
+		backgroundMusic.play();
+
+
+
 		player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
 
 		this.setScreen(new MenuScreen(this, bulletPattern));
@@ -101,33 +109,7 @@ public class MainGame extends Game {
 
 	@Override
 	public void render () {
-		deltaTime = Gdx.graphics.getDeltaTime();
-		player.move(deltaTime);
-		player.updateBullets(deltaTime);
-
-		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
-			player.toggleAutoFire();
-		}
-
-		player.getCollisionRect().move(player.getX(), player.getY());
-
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		ScreenUtils.clear(1, 0, 0, 1);
-		batch.setProjectionMatrix(camera.combined);
-
-		batch.begin();
-
-		batch.draw(background, -650, -350);
-
-		for (Bullet bullet : player.getBullets()) {
-			batch.draw(playerBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 10, 20);
-		}
-
-		batch.draw(player.getSprite(), player.getX(), player.getY());
-
-		batch.end();
+		super.render();
 	}
 
 	@Override
