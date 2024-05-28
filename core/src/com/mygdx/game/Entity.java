@@ -24,6 +24,32 @@ public abstract class Entity extends Actor {
     public float getDamage() {
         return damage;
     }
+    public void moveTowards(Point p){
+        if(p.getY() < y){
+            y += 0.1;
+        }
+        if(p.getY() > y){
+            y -= 0.1;
+        }
+        if(p.getX() < x){
+            x += 0.1;
+        }
+        if(p.getX() > x){
+            x -= 0.1;
+        }
+    }
+
+    public void takeDamage(float damage){
+        health -= damage;
+    }
+
+    public void giveHealth(float public_restrooms){
+        health += public_restrooms;
+    }
+
+    public float getHealth() {
+        return health;
+    }
 
     public void setDamage(float damage) {
         this.damage = damage;

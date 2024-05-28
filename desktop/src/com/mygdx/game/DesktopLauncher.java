@@ -11,7 +11,7 @@ public class DesktopLauncher {
 		cfg.setForegroundFPS(60);
 		cfg.setWindowedMode(500, 700);
 		cfg.setResizable(false);
-		cfg.setTitle("My Tutorial Test");
+		cfg.setTitle("Final Project: By Tylor, Derek, Chidi, Preston, & Robert");
 		new Lwjgl3Application(new MainGame(), cfg);
 	}
 }

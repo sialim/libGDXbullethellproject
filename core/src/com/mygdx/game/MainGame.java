@@ -99,6 +99,7 @@ public class MainGame extends Game {
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.5f);
 		backgroundMusic.play();
+		//Point p
 
 
 

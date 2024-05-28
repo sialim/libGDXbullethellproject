@@ -39,7 +39,7 @@ public class Player extends Entity {
 
     public void shoot() {
         int angle = Utilities.generateRandomNum(87, 93);
-        Bullet bullet = new Bullet(super.entGetX() + (super.getSprite().getWidth() / 2)-8f /*center*/, super.entGetY() + super.getSprite().getHeight()/*top*/, angle);
+        Bullet bullet = new Bullet(super.entGetX() + (super.getSprite().getWidth() / 2)-8f /*center*/, super.entGetY() + super.getSprite().getHeight()/*top*/, angle, new CollisionRect(super.entGetX(), super.entGetY(), 10, 10));
         bullets.add(bullet);
         laserSound.play();
 

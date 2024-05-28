@@ -42,6 +42,7 @@ public class GameScreen implements Screen {
     float timeSinceTextDisplayed;
 
     BitmapFont font;
+    BitmapFont font2;
 
     Sprite bossSprite;
     Boss hongMeiling;
@@ -56,6 +57,10 @@ public class GameScreen implements Screen {
         font.setColor(Color.WHITE);
         font.getData().setScale(1.5f);
         font.setColor(0, 0, 0, 0);
+
+        font2 = new BitmapFont();
+        font2.setColor(Color.GOLD);
+        font2.getData().setScale(2.0f);
 
         timeSinceTextDisplayed = 0.0f;
 
@@ -85,7 +90,7 @@ public class GameScreen implements Screen {
         background.setPosition(0, 0);
 
         player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
-        hongMeiling = new Boss(50000.0f, 1.0f, new CollisionRect(0, 0, 30, 30), bossSprite);
+        hongMeiling = new Boss(1000.0f, 1.0f, new CollisionRect(0, 200, 50, 50), bossSprite);
         hongMeiling.setX(MainGame.SCREEN_WIDTH/2f);
         hongMeiling.setY(1000.0f);
 
@@ -119,8 +124,12 @@ public class GameScreen implements Screen {
         batch.draw(background, -650, -350);
 
         for (Bullet bullet : hongMeiling.getBullets()) {
-            batch.draw(bossBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 30, 30);
+            batch.draw(bossBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 20, 20);
             bullet.update(deltaTime);
+            if(player.getCollisionRect().collidesWith(bullet.getCollisionRect()) || bullet.getCollisionRect().collidesWith(player.getCollisionRect())) {
+                player.takeDamage(10.0f);
+                bullet.death();
+            }
             //System.out.println("Rendering bullet at x: " + bullet.getPosition().x + ", y: " + bullet.getPosition().y);
             //if ((bullet.getPosition().y < 0 || bullet.getPosition().y > MainGame.SCREEN_HEIGHT) || (bullet.getPosition().x < 0 || bullet.getPosition().x > MainGame.SCREEN_WIDTH)) {
             //    hongMeiling.getBullets().removeValue(bullet, true);
@@ -130,6 +139,10 @@ public class GameScreen implements Screen {
         for (Bullet bullet : player.getBullets()) { /*Rendering all the bullets gathered from the player's personal bullet list
         Fuck ChatGPT*/
             batch.draw(playerBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 10, 20);
+            if(bullet.getCollisionRect().collidesWith(new CollisionRect(0, 300, 30, 30))) {
+                hongMeiling.takeDamage(10);
+                bullet.death();
+            }
         }
 
         batch.draw(player.getSprite(), player.entGetX(), player.entGetY());
@@ -145,16 +158,25 @@ public class GameScreen implements Screen {
 
         if (timeSinceTextDisplayed >= 2.0f && timeSinceTextDisplayed < 5.0f) {
             font.setColor(1, 1, 1, 1);
-        } else if (timeSinceTextDisplayed >= 5.0f) {
+        } else if (timeSinceTextDisplayed >= 5.0f & timeSinceTextDisplayed < 7.0f) {
             font.setColor(0, 0, 0, 0);
+        } else if (timeSinceTextDisplayed >= 7.0f & timeSinceTextDisplayed < 7.5f) {
+            //bulletPattern.setRadialPattern(0, 500, 10, 300, new CollisionRect(0, 400, 30, 30));
         }
 
         if (timeSinceTextDisplayed >= 6.0f && timeSinceTextDisplayed <= 6.5f) {
             hongMeiling.shoot();
         }
+
+        if (player.getHealth() >= 0.0f) {
+            //mainGame.setScreen(new GameOverScreen(mainGame, player));
+        }
         // note to self later: keep using time and use modulo operators to determine when to move the boss and fire attacks
 
         font.draw(batch, "Fair is foul, and foul is fair.\nHover through the fog and filthy air.\nAUGUST 12 2036\nTHE HEAT DEATH OF THE UNIVERSE.", -150, -200);
+
+        font2.draw(batch, "HP: " + player.getHealth(), -100, -150);
+        font2.draw(batch, "Boss\nHP: " + hongMeiling.getHealth(), -200, 150);
 
 
         batch.end();

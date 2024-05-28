@@ -8,7 +8,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+/*DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE*/
 public class MenuScreen implements Screen {
     private final MainGame mainGame;
     private final BulletPattern bulletPattern;
